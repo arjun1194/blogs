@@ -1,4 +1,10 @@
-# Website
+# Arjun's Blogs
+
+Deep dives into networking and software engineering.
+
+**Hosted at: [https://arjun1194.github.io/blogs/](https://arjun1194.github.io/blogs/)**
+
+---
 
 This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
 
