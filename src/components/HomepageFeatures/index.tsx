@@ -11,32 +11,35 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
-    description: (
-      <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
-      </>
-    ),
-  },
-  {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
-    description: (
-      <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
-      </>
-    ),
-  },
-  {
-    title: 'Powered by React',
+    title: 'Android Development',
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        6+ years of experience building high-performance Android applications
+        using Kotlin, Jetpack Compose, and advanced system architecture.
+        Ex-Flipkart developer focused on UI/UX and scalable mobile systems.
+      </>
+    ),
+  },
+  {
+    title: 'Open & On-Device AI',
+    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    description: (
+      <>
+        Deeply interested in building <strong>open, safe, and on-device AI</strong> systems. 
+        Focusing on mechanistic interpretability and alignment to ensure 
+        sovereign and secure AI development.
+      </>
+    ),
+  },
+  {
+    title: 'Systems & First Principles',
+    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    description: (
+      <>
+        Approaching complex engineering challenges through a systems-first lens.
+        Passionate about game theory, first principles analysis, and solving
+        deep technical problems.
       </>
     ),
   },

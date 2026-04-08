@@ -5,8 +5,8 @@ import type * as Preset from '@docusaurus/preset-classic';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: "Arjun's Blogs",
-  tagline: 'Deep dives into networking and software engineering',
+  title: 'Arjun',
+  tagline: 'Android Engineer & AI Safety Researcher',
   favicon: 'img/favicon.ico',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -18,7 +18,7 @@ const config: Config = {
   url: 'https://arjun1194.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/blogs/',
+  baseUrl: '/',
   trailingSlash: false,
 
   // GitHub pages deployment config.
@@ -76,7 +76,7 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: "Arjun's Blogs",
+      title: 'Arjun',
       logo: {
         alt: 'Arjun Logo',
         src: 'img/logo.svg',
@@ -107,7 +107,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Arjun, Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Arjun.`,
     },
     prism: {
       theme: prismThemes.github,
