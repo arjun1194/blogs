@@ -1,90 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xsl" href="rss.xsl"?>
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
     <channel>
-        <title>Arjun's Blogs Blog</title>
-        <link>https://arjun1194.github.io/blogs/blog</link>
-        <description>Arjun's Blogs Blog</description>
+        <title>Arjun Blog</title>
+        <link>https://arjun1194.github.io/blog</link>
+        <description>Arjun Blog</description>
         <lastBuildDate>Fri, 03 Apr 2026 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
         <item>
             <title><![CDATA[Failing to Connect to My Own Server: A Story of NAT, IPv6, and Carrier Firewalls]]></title>
-            <link>https://arjun1194.github.io/blogs/blog/networking-nat-firewalls-isps</link>
-            <guid>https://arjun1194.github.io/blogs/blog/networking-nat-firewalls-isps</guid>
+            <link>https://arjun1194.github.io/blog/networking-nat-firewalls-isps</link>
+            <guid>https://arjun1194.github.io/blog/networking-nat-firewalls-isps</guid>
             <pubDate>Fri, 03 Apr 2026 00:00:00 GMT</pubDate>
             <description><![CDATA[Introduction]]></description>
-            <content:encoded><![CDATA[<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="introduction"><strong>Introduction</strong><a href="https://arjun1194.github.io/blogs/blog/networking-nat-firewalls-isps#introduction" class="hash-link" aria-label="Direct link to introduction" title="Direct link to introduction" translate="no">​</a></h2>
+            <content:encoded><![CDATA[<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="introduction">Introduction<a href="https://arjun1194.github.io/blog/networking-nat-firewalls-isps#introduction" class="hash-link" aria-label="Direct link to Introduction" title="Direct link to Introduction" translate="no">​</a></h2>
 <p>"Just how does a computer communicate with another computer?" a seventh-grade me asked myself. It seemed almost like magic! How does it happen that writing a message on my Yahoo Messenger gets delivered to a totally different computer?</p>
-<p>Fast forward a few years. Enter uTorrent. I felt like I was in a wonderland. I read a bit about seeding and peering, but how did that actually work? I still didn't have an answer, but that question remained an itch in my stomach, growing bigger every day.</p>
-<p>Fast forward a few more years, and I was introduced to AJAX and XMLHttpRequest. Okay, so you are telling me that a program can be written so that my computer will send a letter to another computer using the telephone line, and it will actually be delivered? That can't be real! How does it work?! I had to know.</p>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="problem-statement"><strong>Problem Statement</strong><a href="https://arjun1194.github.io/blogs/blog/networking-nat-firewalls-isps#problem-statement" class="hash-link" aria-label="Direct link to problem-statement" title="Direct link to problem-statement" translate="no">​</a></h2>
+<p>Fast forward a few years. Enter <strong>uTorrent</strong>. I felt like I was in a wonderland. I read a bit about seeding and peering, but how did that actually work? I still didn't have an answer, but that question remained an itch in my stomach, growing bigger every day.</p>
+<p>Fast forward a few more years, and I was introduced to <strong>AJAX</strong> and <strong>XMLHttpRequest</strong>. Okay, so you are telling me that a program can be written so that my computer will send a letter to another computer using the telephone line, and it will actually be delivered? That can't be real! How does it work?! I had to know.</p>
+<p>:::learning Learning: Systems Curiosity
+The most profound technical growth often starts with a simple "How does this work?" itch. Never ignore the magic—deconstruct it.
+:::</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="problem-statement">Problem Statement<a href="https://arjun1194.github.io/blog/networking-nat-firewalls-isps#problem-statement" class="hash-link" aria-label="Direct link to Problem Statement" title="Direct link to Problem Statement" translate="no">​</a></h2>
 <p>Okay, so here I am a decade later, and I still don't know how to answer that question. But that thought stays with me. I always used to think about how computers actually communicate with each other.</p>
 <p>Let's start small. Let's make a server that listens to a port waiting for a "request," and it returns a message back to wherever the request came from. Cool, simple.</p>
 <p>But wait, the real challenge is that I must have the server running on my computer on my local network, and I should be able to use my phone on mobile data to knock at my router, asking for the message to be delivered to my laptop. Simple, right? Let's try it...</p>
-<ul>
-<li class="">Set up the server.</li>
-<li class="">I ping from the terminal.</li>
-<li class="">It works! Voila it works, I am a genius.</li>
-<li class="">I open my phone, turn off the Wi-Fi, turn on mobile data, and ping the IP of my laptop...</li>
-</ul>
-<p>Fails. <strong>"Site failed to respond."</strong></p>
-<p>WTF??</p>
-<p>What's wrong??</p>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="---">---<a href="https://arjun1194.github.io/blogs/blog/networking-nat-firewalls-isps#---" class="hash-link" aria-label="Direct link to ---" title="Direct link to ---" translate="no">​</a></h2>
-<p><strong>Problem 1: Global IP Addresses, Ports, and the NAT</strong></p>
-<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="understanding-the-need-for-a-global-ip-address"><strong>Understanding the Need for a Global IP Address</strong><a href="https://arjun1194.github.io/blogs/blog/networking-nat-firewalls-isps#understanding-the-need-for-a-global-ip-address" class="hash-link" aria-label="Direct link to understanding-the-need-for-a-global-ip-address" title="Direct link to understanding-the-need-for-a-global-ip-address" translate="no">​</a></h3>
-<p>Hmm... it seems like every computer has a local IP that is bounded by the router and whatever is connected to it. It seems like every router is assigned a global IP address. Think of it like a postal code, an address, and a flat number, but just in numbers.</p>
+<ol>
+<li class=""><strong>Set up the server</strong> (Node.js/Python).</li>
+<li class=""><strong>Ping from the local terminal</strong>: It works! Voila, I am a genius.</li>
+<li class=""><strong>The Real Test</strong>: I open my phone, turn off the Wi-Fi, turn on mobile data, and ping the public IP of my home network...</li>
+</ol>
+<p><strong>Result:</strong> "Site failed to respond."</p>
+<p>WTF?? What's wrong??</p>
+<div class="theme-admonition theme-admonition-tip admonition_xJq3 alert alert--success"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 12 16"><path fill-rule="evenodd" d="M6.5 0C3.48 0 1 2.19 1 5c0 .92.55 2.25 1 3 1.34 2.25 1.78 2.78 2 4v1h5v-1c.22-1.22.66-1.75 2-4 .45-.75 1-2.08 1-3 0-2.81-2.48-5-5.5-5zm3.64 7.48c-.25.44-.47.8-.67 1.11-.86 1.41-1.25 2.06-1.45 3.23-.02.05-.02.11-.02.17H5c0-.06 0-.13-.02-.17-.2-1.17-.59-1.83-1.45-3.23-.2-.31-.42-.67-.67-1.11C2.44 6.78 2 5.65 2 5c0-2.2 2.02-4 4.5-4 1.22 0 2.36.42 3.22 1.19C10.55 2.94 11 3.94 11 5c0 .66-.44 1.78-.86 2.48zM4 14h5c-.23 1.14-1.3 2-2.5 2s-2.27-.86-2.5-2z"></path></svg></span>Tip: Local vs. Public</div><div class="admonitionContent_BuS1"><p>Just because it works on <code>localhost</code> or <code>192.168.x.x</code> doesn't mean it's accessible to the world. Local pings only prove the server is alive within your own house.</p></div></div>
+<hr>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="problem-1-global-ip-addresses-ports-and-the-nat">Problem 1: Global IP Addresses, Ports, and the NAT<a href="https://arjun1194.github.io/blog/networking-nat-firewalls-isps#problem-1-global-ip-addresses-ports-and-the-nat" class="hash-link" aria-label="Direct link to Problem 1: Global IP Addresses, Ports, and the NAT" title="Direct link to Problem 1: Global IP Addresses, Ports, and the NAT" translate="no">​</a></h2>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="understanding-the-need-for-a-global-ip-address">Understanding the Need for a Global IP Address<a href="https://arjun1194.github.io/blog/networking-nat-firewalls-isps#understanding-the-need-for-a-global-ip-address" class="hash-link" aria-label="Direct link to Understanding the Need for a Global IP Address" title="Direct link to Understanding the Need for a Global IP Address" translate="no">​</a></h3>
+<p>Hmm... it seems like every computer has a <strong>local IP</strong> that is bounded by the router and whatever is connected to it. It seems like every router is assigned a <strong>global IP address</strong>. Think of it like a postal code, an address, and a flat number, but just in numbers.</p>
 <p>And then, every router internally assigns a new number that represents the mapping of devices and their addresses inside that network.</p>
 <p>For instance:</p>
 <ul>
-<li class=""><strong>Global address of router</strong> = 12232</li>
-<li class=""><strong>Internal address of phone</strong> = 1</li>
-<li class=""><strong>Internal address of laptop</strong> = 2</li>
+<li class=""><strong>Global address of router</strong> = <code>122.161.x.x</code></li>
+<li class=""><strong>Internal address of phone</strong> = <code>192.168.1.5</code></li>
+<li class=""><strong>Internal address of laptop</strong> = <code>192.168.1.10</code></li>
 </ul>
 <p>Now, if every device just has an internal address, how does an external sender know which device a message needs to be delivered to? Of course, a device outside of the local network doesn't know what IP my router has assigned to my phone or laptop. What's happening here???</p>
-<p><em>Image Credit: Gemini visualization</em></p>
-<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="the-nat-table"><strong>The NAT Table</strong><a href="https://arjun1194.github.io/blogs/blog/networking-nat-firewalls-isps#the-nat-table" class="hash-link" aria-label="Direct link to the-nat-table" title="Direct link to the-nat-table" translate="no">​</a></h3>
-<p>What…? The NAT meaning Network Address Translation. Oh yeah I know this, this is what always gave me a problem when trying to play Call of Duty Black Ops 2 multiplayer in my childhood. Yeah yeah, so what does this do exactly?</p>
-<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="an-example-hotel-california"><strong>An Example: Hotel California</strong><a href="https://arjun1194.github.io/blogs/blog/networking-nat-firewalls-isps#an-example-hotel-california" class="hash-link" aria-label="Direct link to an-example-hotel-california" title="Direct link to an-example-hotel-california" translate="no">​</a></h3>
-<p>Imagine the whole network under your router is like a whole ass hotel building, and the router is the security guard, receptionist, and lobby boy all rolled into one.</p>
-<p>Let's say you decide to visit <a href="https://google.com/" target="_blank" rel="noopener noreferrer" class="">https://google.com</a>. You want that webpage displayed on your device, so your phone is like, "Ah, let me order a webpage for myself to see." It hits up the receptionist (the router) and says, "Hey router, I am room 1, get me this webpage!"</p>
-<p>The router is like, "Okay, working on it." While your phone waits for the page to load, the router makes an entry in a ledger using a random number between 1 and 65536. This is called a "port" number. As it forwards your request to Google, it makes a note: "If any response comes back on this port, I will return it to address 1, which is the local IP associated with this port."</p>
-<p>When Google returns the response on local port 543 (for instance), the router knows exactly what to do. It checks its NAT table and forwards the webpage straight to the correct room that called it in.</p>
-<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="conflict-of-interest-parallelization-and-identity-management"><strong>Conflict of Interest, Parallelization, and Identity Management</strong><a href="https://arjun1194.github.io/blogs/blog/networking-nat-firewalls-isps#conflict-of-interest-parallelization-and-identity-management" class="hash-link" aria-label="Direct link to conflict-of-interest-parallelization-and-identity-management" title="Direct link to conflict-of-interest-parallelization-and-identity-management" translate="no">​</a></h3>
+<p><img decoding="async" loading="lazy" alt="Figure 1: NAT Visualization" src="https://arjun1194.github.io/assets/images/nat-concept-ccc45424605587aad4d9f7772e175d4c.png" width="1088" height="688" class="img_ev3q">
+<em>Figure 1: Conceptual diagram showing multiple internal devices sharing a single Global IP through a Router.</em></p>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="the-nat-table">The NAT Table<a href="https://arjun1194.github.io/blog/networking-nat-firewalls-isps#the-nat-table" class="hash-link" aria-label="Direct link to The NAT Table" title="Direct link to The NAT Table" translate="no">​</a></h3>
+<p>What…? The <strong>NAT</strong> meaning <strong>Network Address Translation</strong>. Oh yeah I know this, this is what always gave me a problem when trying to play <em>Call of Duty: Black Ops 2</em> multiplayer in my childhood. Yeah yeah, so what does this do exactly?</p>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="an-example-hotel-california">An Example: Hotel California<a href="https://arjun1194.github.io/blog/networking-nat-firewalls-isps#an-example-hotel-california" class="hash-link" aria-label="Direct link to An Example: Hotel California" title="Direct link to An Example: Hotel California" translate="no">​</a></h3>
+<p>Imagine the whole network under your router is like a hotel building, and the router is the security guard, receptionist, and lobby boy all rolled into one.</p>
+<p>Let's say you decide to visit Google. You want that webpage displayed on your device, so your phone is like, "Ah, let me order a webpage for myself to see." It hits up the receptionist (the router) and says, "Hey router, I am room 1, get me this webpage!"</p>
+<p>The router is like, "Okay, working on it." While your phone waits for the page to load, the router makes an entry in a ledger using a random number between 1 and 65535. This is called a <strong>"port" number</strong>. As it forwards your request to Google, it makes a note: <em>"If any response comes back on this port, I will return it to address 192.168.1.5."</em></p>
+<p>When Google returns the response on that specific port, the router knows exactly what to do. It checks its NAT table and forwards the webpage straight to the correct room that called it in.</p>
+<p>:::learning Learning: NAT as a Middleman
+NAT is essentially a stateful mapping system. It translates private internal addresses to a single public address by multiplexing them across different ports.
+:::</p>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="conflict-of-interest-parallelization-and-identity-management">Conflict of Interest, Parallelization, and Identity Management<a href="https://arjun1194.github.io/blog/networking-nat-firewalls-isps#conflict-of-interest-parallelization-and-identity-management" class="hash-link" aria-label="Direct link to Conflict of Interest, Parallelization, and Identity Management" title="Direct link to Conflict of Interest, Parallelization, and Identity Management" translate="no">​</a></h3>
 <p>Okay, but what happens when 2 devices want to access the exact same resource at the exact same time?</p>
-<p>Solution is simple. The router intercepts both packets at the exact same time. It sees that both are going to the exact same destination. It also sees that both devices used the same internal port (5000). Does the router panic? No. It simply assigns two completely different, unique ports on its Global IP (12232) to act as the middleman channels. It creates a NAT Table that looks like this:</p>
-<p><em>[Representation of the port address table (PAT)]</em></p>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="----1">---<a href="https://arjun1194.github.io/blogs/blog/networking-nat-firewalls-isps#----1" class="hash-link" aria-label="Direct link to ---" title="Direct link to ---" translate="no">​</a></h2>
-<p><strong>Problem 2: Firewalls, Firewalls Everywhere</strong></p>
-<p>Okay, so I have a global IP address, now what? I got to the URL bar of my Mac system, entered the global IP address of my device followed by the port of the server on my local machine, voila it works. I have a response.</p>
-<p>Let's try it from the mobile network... Site is not reachable. Why? I switch on the Wi-Fi in my phone, enter the local IP of my laptop, retry the load on the webserver URL, succeeds. What is happening?</p>
+<p>The solution is simple. The router intercepts both packets. It sees that both are going to the same destination. It also sees that both devices might even use the same internal source port. Does the router panic? No. It simply assigns two completely different, unique ports on its <strong>Global IP</strong> to act as the middleman channels. It creates a <strong>PAT (Port Address Translation)</strong> Table that looks like this:</p>
+<table><thead><tr><th style="text-align:left">Internal Device</th><th style="text-align:left">Internal Port</th><th style="text-align:left">External (NAT) Port</th><th style="text-align:left">Destination</th></tr></thead><tbody><tr><td style="text-align:left">Phone (1.5)</td><td style="text-align:left">5000</td><td style="text-align:left">45001</td><td style="text-align:left">Google</td></tr><tr><td style="text-align:left">Laptop (1.10)</td><td style="text-align:left">5000</td><td style="text-align:left">45002</td><td style="text-align:left">Google</td></tr></tbody></table>
+<hr>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="problem-2-firewalls-firewalls-everywhere">Problem 2: Firewalls, Firewalls Everywhere<a href="https://arjun1194.github.io/blog/networking-nat-firewalls-isps#problem-2-firewalls-firewalls-everywhere" class="hash-link" aria-label="Direct link to Problem 2: Firewalls, Firewalls Everywhere" title="Direct link to Problem 2: Firewalls, Firewalls Everywhere" translate="no">​</a></h2>
+<p>Okay, so I have a global IP address, now what? I went to the URL bar of my system, entered the global IP address followed by the port... it works locally.</p>
+<p>Let's try it from the mobile network... <strong>Site is not reachable.</strong> Why?</p>
 <p>Enter, <strong>The Firewall</strong>.</p>
-<p>"Firewall is a network security system that monitors and controls incoming and outgoing traffic based on predetermined security rules. Acting as a barrier between trusted and untrusted networks (e.g., the internet), it prevents unauthorized access and cyber threats. Firewalls can be hardware, software, or a combination."</p>
+<blockquote>
+<p>"A firewall is a network security system that monitors and controls incoming and outgoing traffic based on predetermined security rules. Acting as a barrier between trusted and untrusted networks, it prevents unauthorized access."</p>
+</blockquote>
 <p>A firewall is nothing but a rulebook. The computer or any system can have a rulebook of which connections to allow and which to reject.</p>
-<p><em>[Visualization of how Firewall disallows certain network requests]</em></p>
-<p>Okay, so what I did next was go to my router settings and learned that there is a setting known as DMZ.</p>
-<p>A <strong>DMZ (Demilitarized Zone)</strong> on a home router is a security feature that exposes one local device completely to the internet, bypassing the firewall to open all TCP/UDP ports.</p>
-<p>Boom, firewall gone, server up.</p>
-<p><em>[DMZ config page on Router config page]</em></p>
-<p>This seems a bit too lenient in terms of security doesn't it? Well in fact I just wanted to expose just one application through the NAT, so why expose the whole machine? Enter ALG.</p>
-<p>An <strong>Application Layer Gateway (ALG)</strong> on a router is a security feature that inspects and modifies traffic for specific protocols (like SIP, FTP, or RTSP) to help them pass through Network Address Translation (NAT) firewalls.</p>
-<p>Another alternative to this is <strong>Port forwarding</strong>. This will generally only expose certain ports to the internet like port 80, 443, 53, etc.</p>
-<p>But alas this feature didn't exist on my router.</p>
-<p>After disabling my router firewall for my IP Address, I finally excitedly hit the URL again and faced the same issue:</p>
+<p><img decoding="async" loading="lazy" alt="Figure 2: Firewall Rejection" src="https://arjun1194.github.io/assets/images/firewall-block-6fed396497d0d76806b17cf156bf7a8f.png" width="1129" height="663" class="img_ev3q">
+<em>Figure 2: Visualization of a Firewall dropping unsolicited inbound packets.</em></p>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="bypassing-the-barrier">Bypassing the Barrier<a href="https://arjun1194.github.io/blog/networking-nat-firewalls-isps#bypassing-the-barrier" class="hash-link" aria-label="Direct link to Bypassing the Barrier" title="Direct link to Bypassing the Barrier" translate="no">​</a></h3>
+<p>Okay, so what I did next was go to my router settings and learned about <strong>DMZ (Demilitarized Zone)</strong>. A DMZ on a home router exposes one local device completely to the internet, bypassing the firewall to open all TCP/UDP ports.</p>
+<p>Boom, firewall gone, server up... right?</p>
+<p>Wait, exposing the whole machine is a bit too lenient for security. Why not just expose one application? Enter <strong>ALG (Application Layer Gateway)</strong> and <strong>Port Forwarding</strong>. Port forwarding only exposes specific ports (like 80 for HTTP or 443 for HTTPS) to the internet.</p>
+<p>But alas, this feature didn't exist or work as expected on my router. After disabling my router firewall for my IP Address, I finally excitedly hit the URL again and faced the same issue:</p>
 <p><strong>"SITE NOT RESPONDING"</strong></p>
 <p>FML!! What's wrong now??</p>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="----2">---<a href="https://arjun1194.github.io/blogs/blog/networking-nat-firewalls-isps#----2" class="hash-link" aria-label="Direct link to ---" title="Direct link to ---" translate="no">​</a></h2>
-<p><strong>Problem 3: Carrier Firewall, The Bossfight of Networking Issues</strong></p>
-<p>So I dig a bit deeper into this and guess what I find? Our ISPs like Airtel or Jio are running massive Carrier-Grade Firewalls.</p>
-<p>Think of the ISP as a super paranoid head of security for the entire city of hotel buildings. They put strict inbound filtering on our residential fiber connections because they absolutely do not want you running some unauthorized server business from your room or accidentally inviting a massive zombie botnet into the network.</p>
-<p>They just drop any uninvited visitors right at the city gate! And if you think your neighbor in the exact same building can just walk over and knock on your digital door, think again. Thanks to <strong>Client Isolation</strong>, the whole splitter architecture is rigged. These Optical Line Terminals isolate everyone's traffic, forcing every single message to walk all the way out to the central gateway where that paranoid head of security just intercepts and drops it.</p>
-<p>But wait a minute, my brain screams! If this security guard drops everything coming in... <strong>How the hell was I seeding on uTorrent or playing multiplayer games with zero issues?</strong></p>
-<p>Well, it turns out there is a clever exception. Torrents and games work perfectly because my computer is the one making the very first move. It is an outbound-initiated connection! When my laptop shouts out to a gaming server, it punches a tiny little tunnel right through the firewall. This magic trick is literally called <strong>UDP hole punching</strong>.</p>
-<p>The ISP guard notes down that I started the conversation, so they let the reply come back through that specific hole. But my poor little custom Node server?</p>
-<p>It is just sitting inside my laptop waiting for a completely random knock from the external world. Since I did not send an invite out first, the guard sees a stranger at the gate and kicks them out. Boom. "Site failed to respond." Mystery solved!</p>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="----3">---<a href="https://arjun1194.github.io/blogs/blog/networking-nat-firewalls-isps#----3" class="hash-link" aria-label="Direct link to ---" title="Direct link to ---" translate="no">​</a></h2>
-<p><strong>Tunneling: Three Problems, One Solution</strong></p>]]></content:encoded>
+<div class="theme-admonition theme-admonition-tip admonition_xJq3 alert alert--success"><div class="admonitionHeading_Gvgb"><span class="admonitionIcon_Rf37"><svg viewBox="0 0 12 16"><path fill-rule="evenodd" d="M6.5 0C3.48 0 1 2.19 1 5c0 .92.55 2.25 1 3 1.34 2.25 1.78 2.78 2 4v1h5v-1c.22-1.22.66-1.75 2-4 .45-.75 1-2.08 1-3 0-2.81-2.48-5-5.5-5zm3.64 7.48c-.25.44-.47.8-.67 1.11-.86 1.41-1.25 2.06-1.45 3.23-.02.05-.02.11-.02.17H5c0-.06 0-.13-.02-.17-.2-1.17-.59-1.83-1.45-3.23-.2-.31-.42-.67-.67-1.11C2.44 6.78 2 5.65 2 5c0-2.2 2.02-4 4.5-4 1.22 0 2.36.42 3.22 1.19C10.55 2.94 11 3.94 11 5c0 .66-.44 1.78-.86 2.48zM4 14h5c-.23 1.14-1.3 2-2.5 2s-2.27-.86-2.5-2z"></path></svg></span>Tip: Security First</div><div class="admonitionContent_BuS1"><p>Never leave a device in the DMZ for long. It's like leaving your front door wide open in a crowded city just because you're waiting for a pizza delivery.</p></div></div>
+<hr>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="problem-3-carrier-firewall-the-bossfight-of-networking-issues">Problem 3: Carrier Firewall, The Bossfight of Networking Issues<a href="https://arjun1194.github.io/blog/networking-nat-firewalls-isps#problem-3-carrier-firewall-the-bossfight-of-networking-issues" class="hash-link" aria-label="Direct link to Problem 3: Carrier Firewall, The Bossfight of Networking Issues" title="Direct link to Problem 3: Carrier Firewall, The Bossfight of Networking Issues" translate="no">​</a></h2>
+<p>So I dig a bit deeper into this and guess what I find? Our ISPs like Airtel or Jio are running massive <strong>Carrier-Grade NAT (CGNAT)</strong> and Firewalls.</p>
+<p>Think of the ISP as a super paranoid head of security for the entire city of hotel buildings. They put strict inbound filtering on our residential fiber connections because they absolutely do not want you running some unauthorized server business from your room.</p>
+<p>They just drop any uninvited visitors right at the city gate! And if you think your neighbor in the exact same building can just walk over and knock on your digital door, think again. Thanks to <strong>Client Isolation</strong>, the whole splitter architecture is rigged. These <strong>Optical Line Terminals (OLTs)</strong> isolate everyone's traffic, forcing every single message to walk all the way out to the central gateway where it's intercepted.</p>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="the-mystery-of-torrents">The Mystery of Torrents<a href="https://arjun1194.github.io/blog/networking-nat-firewalls-isps#the-mystery-of-torrents" class="hash-link" aria-label="Direct link to The Mystery of Torrents" title="Direct link to The Mystery of Torrents" translate="no">​</a></h3>
+<p>But wait a minute! If this security guard drops everything coming in... <strong>How was I seeding on uTorrent or playing multiplayer games with zero issues?</strong></p>
+<p>Well, it turns out there is a clever exception. Torrents and games work because my computer is the one making the very first move. It is an <strong>outbound-initiated connection</strong>! When my laptop shouts out to a gaming server, it punches a tiny little tunnel right through the firewall. This is called <strong>UDP hole punching</strong>.</p>
+<p>The ISP guard notes down that I started the conversation, so they let the reply come back through that specific hole. But my poor little custom Node server? It is just sitting inside my laptop waiting for a completely random knock from the external world. Since I did not send an invite out first, the guard sees a stranger at the gate and kicks them out.</p>
+<p>:::learning Learning: UDP Hole Punching
+Outbound traffic is usually trusted; inbound traffic is usually blocked. To receive data, you often need to "punch a hole" from the inside first.
+:::</p>
+<hr>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="conclusion-tunneling-to-the-rescue">Conclusion: Tunneling to the Rescue<a href="https://arjun1194.github.io/blog/networking-nat-firewalls-isps#conclusion-tunneling-to-the-rescue" class="hash-link" aria-label="Direct link to Conclusion: Tunneling to the Rescue" title="Direct link to Conclusion: Tunneling to the Rescue" translate="no">​</a></h2>
+<p>Stay tuned for the next part where we explore <strong>Tunneling</strong>—the ultimate solution to these three problems. We'll look at how tools like Cloudflare Tunnels, Ngrok, or Tailscale allow us to bypass NAT and Firewalls entirely by creating a secure bridge from the inside out.</p>
+<hr>]]></content:encoded>
             <category>networking</category>
             <category>nat</category>
             <category>firewall</category>
